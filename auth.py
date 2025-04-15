@@ -46,3 +46,10 @@ class Auth:
             return False
         except (FileNotFoundError, json.JSONDecodeError):
             return False
+
+    def change_master_password(self):
+        if not self.login():
+            print("Incorrect password")
+        else:
+            self.setup()
+            print("Master password changed successfully")

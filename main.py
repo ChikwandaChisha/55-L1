@@ -2,6 +2,7 @@ from auth import Auth
 from getpass import getpass
 from crypto_utils import CryptoUtils
 
+auth = Auth()
 def crypto_utils_menu():
     crypto_utils = CryptoUtils()
     while True:
@@ -12,9 +13,10 @@ def crypto_utils_menu():
         print("4. Delete account")
         print("5. List all services")
         print("6. Delete all accounts")
-        print("7. Exit")
+        print("7. Change master password")
+        print("8. Exit")
         
-        choice = input("Enter your choice (1-7): ")
+        choice = input("Enter your choice (1-8): ")
         
         if choice == "1":
             crypto_utils.add()
@@ -36,21 +38,22 @@ def crypto_utils_menu():
             else:
                 print("Operation cancelled")
         elif choice == "7":
+            auth.change_master_password()
+        elif choice == "8":
             print("Goodbye!")
-            break
+            return choice
         else:
             print("Invalid choice. Please try again.")
 
     
     
 def main():
-    auth = Auth()
     print("Welcome to the password manager")
     while True:
         if auth.password_exists():
             if auth.login():
-                crypto_utils_menu()
-                if crypto_utils_menu().choice == "7":
+                choice = crypto_utils_menu()
+                if choice == "8":
                     break
             else:
                 print('Login failed, please try again')
