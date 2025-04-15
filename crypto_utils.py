@@ -23,12 +23,15 @@ class CryptoUtils:
         
     def encrypt(self, message):
         # Encrypt the message using Fernet
-        encrypted_message = self.fernet.encrypt(message.encode())
+        self.salt = os.urandom(16)
+        msg_to_encrypt = self.salt + message.encode()
+        encrypted_message = self.fernet.encrypt(msg_to_encrypt)
         return encrypted_message.decode()  
     
     def decrypt(self, encrypted_message):
         # Decrypt the message using Fernet
-        decrypted_message = self.fernet.decrypt(encrypted_message.encode())
+        decrypted_msg_with_salt = self.fernet.decrypt(encrypted_message.encode())
+        decrypted_message = decrypted_msg_with_salt[16:]
         
         return decrypted_message.decode()  
     
