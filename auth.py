@@ -15,7 +15,12 @@ class Auth:
             
         
         with open('vault.json', 'w') as vault_file:
-            json.dump({'master_pwd': master_password1}, vault_file)
+            vault_data = json.load(vault_file)
+            if not vault_data:
+                vault_data = {}
+            
+        vault_data['master_pwd'] = master_password1
+        json.dump(vault_data, vault_file)
     
     def password_exists(self):
         with open('vault.json', 'r') as vault_file:
