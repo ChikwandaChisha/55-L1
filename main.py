@@ -1,8 +1,8 @@
 from auth import Auth
-from getpass import getpass
 from crypto_utils import CryptoUtils
 
 auth = Auth()
+
 def crypto_utils_menu():
     crypto_utils = CryptoUtils()
     while True:
@@ -41,7 +41,7 @@ def crypto_utils_menu():
             auth.change_master_password()
         elif choice == "8":
             print("Goodbye!")
-            return choice
+            break
         else:
             print("Invalid choice. Please try again.")
 
@@ -49,12 +49,12 @@ def crypto_utils_menu():
     
 def main():
     print("Welcome to the password manager")
-    while True:
+    while True:      
         if auth.password_exists():
             if auth.login():
-                choice = crypto_utils_menu()
-                if choice == "8":
-                    break
+                crypto_utils_menu()
+                break
+                    
             else:
                 print('Login failed, please try again')
         else:

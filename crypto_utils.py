@@ -38,6 +38,7 @@ class CryptoUtils:
     def add(self):
         input_message = input("Add your service name: ")
         
+        
         # Try to read existing data, or start with empty dict if file doesn't exist or is empty
         try:
             with open('storage.json', 'r') as file:
@@ -50,7 +51,7 @@ class CryptoUtils:
             data = {}
             
         if input_message in data:
-            print("Account already exists")
+            print("\nAccount already exists")
             return
         
         password1 = getpass("Add your password: ")
@@ -69,7 +70,7 @@ class CryptoUtils:
         with open('storage.json', 'w') as file:
             json.dump(data, file)
             
-        print("Account added successfully")
+        print("\nAccount added successfully!")
         
     def edit(self, service):
         with open('storage.json', 'r') as file:
@@ -88,10 +89,14 @@ class CryptoUtils:
         with open('storage.json', 'r') as file:
             data = json.load(file)
         
+        if service not in data:
+            print("\nAccount does not exist")
+            return
+        
         username, password = data[service]
         password = self.decrypt(password)
         
-        return f"Username: {username} \nPassword: {password}"
+        return f"\nUsername: {username} \nPassword: {password}"
         
     def delete(self, service):
         with open('storage.json', 'r') as file:
@@ -102,7 +107,7 @@ class CryptoUtils:
         data.pop(service)
         with open('storage.json', 'w') as file:
             json.dump(data, file)
-        print("Account deleted successfully")
+        print("\nAccount deleted successfully")
     
     # pri
     def list_services(self):
@@ -111,11 +116,11 @@ class CryptoUtils:
                 data = json.load(file)
             services = list(data.keys())
             if services:
-                print('The available accounts are: ', services)
+                print('\nThe available accounts are: ', services)
             else:
-                print('No accounts found')
+                print('\nNo accounts found')
         except FileNotFoundError:
-            print('No accounts found')  
+            print('\nNo accounts found')  
             
     def delete_all(self):
         with open('storage.json', 'w') as file:
