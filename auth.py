@@ -3,20 +3,25 @@ from getpass import getpass
 import os
 import hashlib
 from passlib.hash import pbkdf2_sha256
-
+from crypto_utils import CryptoUtils
 
 class Auth:
     def __init__(self):
         pass
     
     def setup(self):
-        master_password1 = getpass("Setup your master password: ")
-        master_password2 = getpass("Confirm your master password: ")
-        # Check if the passwords match
-        while master_password1 != master_password2:
-            print("Passwords do not match")
+        crypto_utils = CryptoUtils()
+        generate_check = input("Do you want to generate a master password? (y/n): ")
+        if generate_check == 'y':
+            master_password1 = crypto_utils.generate_pwd()
+        else:
             master_password1 = getpass("Setup your master password: ")
             master_password2 = getpass("Confirm your master password: ")
+            # Check if the passwords match
+            while master_password1 != master_password2:
+                print("Passwords do not match")
+                master_password1 = getpass("Setup your master password: ")
+                master_password2 = getpass("Confirm your master password: ")
             
         # Try to read existing vault data
         try:

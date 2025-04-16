@@ -1,11 +1,16 @@
 from auth import Auth
 from crypto_utils import CryptoUtils
+import time
 
 auth = Auth()
 
 def crypto_utils_menu():
     crypto_utils = CryptoUtils()
-    while True:
+    start_time = time.time()
+    timeout = start_time + 5*60 # 5 minutes timeout
+    
+    while time.time() < timeout:
+        print(f"\nTime remaining: {timeout - time.time():.0f} seconds")
         print("\nPassword Manager Menu:")
         print("1. Add new account")
         print("2. Retrieve account")
@@ -53,6 +58,7 @@ def main():
         if auth.password_exists():
             if auth.login():
                 crypto_utils_menu()
+                print('You have been logged out')
                 break
                     
             else:

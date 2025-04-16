@@ -135,15 +135,17 @@ class CryptoUtils:
             json.dump({}, file)
         print("\nAll accounts deleted successfully")
     
-    def generate_pwd(self):
+    def generate_pwd(self, master_pwd=False):
         letters = string.ascii_letters
         digits = string.digits
         special_chars = string.punctuation
         selection = letters + digits + special_chars
         password = ''
         
-        for _ in range(16):
+        for _ in range(22):
             password += random.choice(selection)
+        
+        print(f"\nYour master password is: {password}")
         return password
         
 
