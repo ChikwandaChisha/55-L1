@@ -4,6 +4,9 @@ import os
 import hashlib
 from getpass import getpass
 from cryptography.fernet import Fernet
+import random
+import secrets
+import string
 
 
 class CryptoUtils:
@@ -53,15 +56,20 @@ class CryptoUtils:
         if input_message in data:
             print("\nAccount already exists")
             return
+        # check if the user wants to generate a password
+        choice = input("Do you want to generate a password? (y/n): ")
+        if choice == 'y':
+            password1 = self.generate_pwd()
         
-        password1 = getpass("Add your password: ")
-        password2 = getpass("Confirm your password: ")
-        
-        # check if the passwords match
-        while password1 != password2:
-            print("Passwords do not match")
+        else:
             password1 = getpass("Add your password: ")
             password2 = getpass("Confirm your password: ")
+            
+            # check if the passwords match
+            while password1 != password2:
+                print("Passwords do not match")
+                password1 = getpass("Add your password: ")
+                password2 = getpass("Confirm your password: ")
         
         username = input("Add your username: ")
         data[input_message] = [username, self.encrypt(password1)]
@@ -125,5 +133,17 @@ class CryptoUtils:
     def delete_all(self):
         with open('storage.json', 'w') as file:
             json.dump({}, file)
-        print("All accounts deleted successfully")
+        print("\nAll accounts deleted successfully")
+    
+    def generate_pwd(self):
+        letters = string.ascii_letters
+        digits = string.digits
+        special_chars = string.punctuation
+        selection = letters + digits + special_chars
+        password = ''
+        
+        for _ in range(16):
+            password += random.choice(selection)
+        return password
+        
 
