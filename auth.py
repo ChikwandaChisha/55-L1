@@ -1,5 +1,9 @@
 import json
 from getpass import getpass
+import os
+import hashlib
+from passlib.hash import pbkdf2_sha256
+
 
 class Auth:
     def __init__(self):
@@ -21,8 +25,9 @@ class Auth:
         except (FileNotFoundError, json.JSONDecodeError):
             vault_data = {}
             
-        # Update vault data with master password
-        vault_data['master_pwd'] = master_password1
+        # Hash the master password
+        hashed_password = pbkdf2_sha256.hash(master_password1)
+        vault_data['master_pwd'] = hashed_password
         
         # Save to vault.json
         with open('vault.json', 'w') as vault_file:
@@ -41,8 +46,8 @@ class Auth:
         try:
             with open('vault.json', 'r') as vault_file:
                 vault_data = json.load(vault_file)
-                if 'master_pwd' in vault_data and vault_data['master_pwd'] == master_password:
-                    return True
+                if 'master_pwd' in vault_data:
+                    return pbkdf2_sha256.verify(master_password, vault_data['master_pwd'])
             return False
         except (FileNotFoundError, json.JSONDecodeError):
             return False
