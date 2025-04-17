@@ -7,27 +7,48 @@ Password Manager - Main Module
 from auth import Auth
 from crypto_utils import CryptoUtils
 import time
+import os
 
+# Initialize the authentication system
 auth = Auth()
 
 def crypto_utils_menu():
+    """
+    Display and handle the main password manager menu.
+    Implements a 3-minute timeout for security.
+    """
     crypto_utils = CryptoUtils()
+    # Set up 3-minute timeout
     start_time = time.time()
-    timeout = start_time + 5*60 # 5 minutes timeout
+    timeout = start_time + 3*60
     
-    while time.time() < timeout:
-        print(f"\nTime remaining: {timeout - time.time():.0f} seconds")
-        print("\nPassword Manager Menu:")
-        print("1. Add new account")
-        print("2. Retrieve account")
-        print("3. Edit account")
-        print("4. Delete account")
-        print("5. List all services")
-        print("6. Delete all accounts")
-        print("7. Change master password")
-        print("8. Exit")
+    menu_text = """
+Password Manager Menu:
+1. Add new account
+2. Retrieve account
+3. Edit account
+4. Delete account
+5. List all services
+6. Delete all accounts
+7. Change master password
+8. Exit
+"""
+    print(menu_text)
+    while True:        
+        # Check if timeout has occurred
+        if time.time() >= timeout:
+            print("\nSession timed out due to inactivity")
+            break
+            
+        # Display remaining time and menu
+        print(f"\nTime remaining: {int(timeout - time.time())} seconds")
         
-        choice = input("Enter your choice (1-8): ")
+        
+        # Get user choice and handle accordingly
+        choice = input("\nEnter your choice (1-8): ")
+        
+        # Reset timeout timer after user input
+        timeout = time.time() + 3*60
         
         if choice == "1":
             crypto_utils.add()
@@ -43,8 +64,9 @@ def crypto_utils_menu():
         elif choice == "5":
             crypto_utils.list_services()
         elif choice == "6":
-            confirm = input("Are you sure you want to delete all accounts? (yes/no): ")
-            if confirm.lower() == 'yes':
+            # Confirm before deleting all accounts
+            confirm = input("Are you sure you want to delete all accounts? (y/n): ")
+            if confirm.lower() == 'y':
                 crypto_utils.delete_all()
             else:
                 print("Operation cancelled")
@@ -55,23 +77,28 @@ def crypto_utils_menu():
             break
         else:
             print("Invalid choice. Please try again.")
+            
+        
+        
 
-    
-    
 def main():
+    """
+    Main program loop.
+    Handles initial setup, login, and session management.
+    """
     print("Welcome to the password manager")
     while True:      
         if auth.password_exists():
+            # Attempt login if master password exists
             if auth.login():
                 crypto_utils_menu()
                 print('You have been logged out')
                 break
-                    
             else:
                 print('Login failed, please try again')
         else:
+            # Set up master password if none exists
             auth.setup()
-    
     
 if __name__ == "__main__":
     main()

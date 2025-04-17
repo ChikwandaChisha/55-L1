@@ -17,6 +17,10 @@ import string
 
 class CryptoUtils:
     def __init__(self):
+        """
+        Initialize the CryptoUtils class.
+        Loads or generates the encryption key and sets up the Fernet cipher.
+        """
         # Try to load existing key, or generate a new one if it doesn't exist
         try:
             with open('vault.json', 'r') as vault_file:
@@ -31,6 +35,13 @@ class CryptoUtils:
         self.data = {}
         
     def encrypt(self, message):
+        """
+        Encrypt a message using Fernet symmetric encryption.
+        Args:
+            message (str): The message to encrypt
+        Returns:
+            str: The encrypted message as a string
+        """
         # Encrypt the message using Fernet
         self.salt = os.urandom(16)
         msg_to_encrypt = self.salt + message.encode()
@@ -38,6 +49,13 @@ class CryptoUtils:
         return encrypted_message.decode()  
     
     def decrypt(self, encrypted_message):
+        """
+        Decrypt a message that was encrypted using Fernet.
+        Args:
+            encrypted_message (str): The encrypted message to decrypt
+        Returns:
+            str: The decrypted message
+        """
         # Decrypt the message using Fernet
         decrypted_msg_with_salt = self.fernet.decrypt(encrypted_message.encode())
         decrypted_message = decrypted_msg_with_salt[16:]
@@ -45,8 +63,12 @@ class CryptoUtils:
         return decrypted_message.decode()  
     
     def add(self):
+        """
+        Add a new account to the password manager.
+        Handles service name, username, and password input.
+        Supports password generation and confirmation.
+        """
         input_message = input("Add your service name: ")
-        
         
         # Try to read existing data, or start with empty dict if file doesn't exist or is empty
         try:
@@ -88,6 +110,11 @@ class CryptoUtils:
         print("\nAccount added successfully!")
         
     def edit(self, service):
+        """
+        Edit an existing account's username and/or password.
+        Args:
+            service (str): The service name to edit
+        """
         with open('storage.json', 'r') as file:
             data = json.load(file)
             
@@ -116,18 +143,23 @@ class CryptoUtils:
             
         print(f"\nUsername: {username} \nPassword: {password}")
             
-            
-        
-        
         data[service] = [username, self.encrypt(password)]
         with open('storage.json', 'w') as file:
             json.dump(data, file)
         print("Account updated successfully")
     
     def retrieve(self, service):
+        """
+        Retrieve and display an account's credentials.
+        Args:
+            service (str): The service name to retrieve
+        Returns:
+            str: Formatted string containing username and decrypted password
+        """
         with open('storage.json', 'r') as file:
             data = json.load(file)
         
+        # check if the service exists
         if service not in data:
             print("\nAccount does not exist")
             return
@@ -138,18 +170,30 @@ class CryptoUtils:
         return f"\nUsername: {username} \nPassword: {password}"
         
     def delete(self, service):
+        """
+        Delete an account from the password manager.
+        Args:
+            service (str): The service name to delete
+        """
         with open('storage.json', 'r') as file:
             data = json.load(file)
+            
+        # check if the service exists
         if service not in data:
             print("Account not found")
             return
+        
+        # delete the service
         data.pop(service)
         with open('storage.json', 'w') as file:
             json.dump(data, file)
+            
         print("\nAccount deleted successfully")
     
-    # pri
     def list_services(self):
+        """
+        List all services stored in the password manager.
+        """
         try:
             with open('storage.json', 'r') as file:
                 data = json.load(file)
@@ -162,11 +206,23 @@ class CryptoUtils:
             print('\nNo accounts found')  
             
     def delete_all(self):
+        """
+        Delete all accounts from the password manager.
+        Requires user confirmation before proceeding.
+        """
+        # delete all accounts
         with open('storage.json', 'w') as file:
             json.dump({}, file)
         print("\nAll accounts deleted successfully")
     
-    def generate_pwd(self, master_pwd=False):
+    def generate_pwd(self):
+        """
+        Generate a random password.
+        Args:
+            master_pwd (bool): If True, indicates this is for a master password   
+        Returns:
+            str: The generated password
+        """
         letters = string.ascii_letters
         digits = string.digits
         special_chars = string.punctuation
