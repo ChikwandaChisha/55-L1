@@ -1,3 +1,9 @@
+"""
+Authors: Chikwanda Chisha and Patrick Bongo
+Date: April 13, 2025
+Password Manager - Cryptography Utilities Module
+"""
+
 import cryptography
 import json
 import os
@@ -56,6 +62,7 @@ class CryptoUtils:
         if input_message in data:
             print("\nAccount already exists")
             return
+        
         # check if the user wants to generate a password
         choice = input("Do you want to generate a password? (y/n): ")
         if choice == 'y':
@@ -83,11 +90,35 @@ class CryptoUtils:
     def edit(self, service):
         with open('storage.json', 'r') as file:
             data = json.load(file)
+            
         if service not in data:
             print("Account not found")
             return
-        password = getpass("Add your password: ")
-        username = input("Add your username: ")
+        
+        # check if the user wants to change the username
+        username_change = input("Do you want to change the username? (y/n): ")
+        if username_change == 'y':
+            username = input("Add your username: ")
+        else:
+            username = data[service][0]
+        
+        # check if the user wants to change the password
+        password_change = input("Do you want to change the password? (y/n): ")
+        if password_change == 'y':
+            # check if the user wants to generate a new password
+            password_generate = input("Do you want to generate a new password? (y/n): ")
+            if password_generate == 'y':
+                password = self.generate_pwd()
+            else:
+                password = getpass("Add your password: ")
+        else:
+            password = self.decrypt(data[service][1])
+            
+        print(f"\nUsername: {username} \nPassword: {password}")
+            
+            
+        
+        
         data[service] = [username, self.encrypt(password)]
         with open('storage.json', 'w') as file:
             json.dump(data, file)

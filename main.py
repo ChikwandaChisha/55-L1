@@ -1,3 +1,9 @@
+"""
+Authors: Chikwanda Chisha and Patrick Bongo
+Date: April 13, 2025
+Password Manager - Main Module
+"""
+
 from auth import Auth
 from crypto_utils import CryptoUtils
 import time

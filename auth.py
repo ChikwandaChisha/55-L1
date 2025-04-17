@@ -1,3 +1,9 @@
+"""
+Authors: Chikwanda Chisha and Patrick Bongo
+Date: April 13, 2025
+Password Manager - Authentication Module
+"""
+
 import json
 from getpass import getpass
 import os
@@ -6,9 +12,6 @@ from passlib.hash import pbkdf2_sha256
 from crypto_utils import CryptoUtils
 
 class Auth:
-    def __init__(self):
-        pass
-    
     def setup(self):
         crypto_utils = CryptoUtils()
         generate_check = input("Do you want to generate a master password? (y/n): ")

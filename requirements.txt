@@ -1,2 +1,6 @@
+# Authors: Chikwanda Chisha and Patrick Bongo
+# Date: April 13, 2025
+# Password Manager - Dependencies
+
 passlib==1.7.4
 cryptography==41.0.7
